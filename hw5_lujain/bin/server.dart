@@ -5,7 +5,7 @@ import 'package:shelf/shelf_io.dart';
 import 'package:shelf_hotreload/shelf_hotreload.dart';
 import 'package:shelf_router/shelf_router.dart';
 
-List<Map<String, dynamic>> myList = [];
+List<Map> myList = [];
 
 main(List<String> args) async {
   withHotreload(() => createServer());
@@ -19,12 +19,17 @@ Future<HttpServer> createServer() async {
       final body = await req.readAsString();
       final Map jsonBody = json.decode(body);
 
-      myList.add({
+      if (jsonBody.containsKey('name') &&
+          jsonBody.containsKey('age') &&
+          jsonBody.containsKey('mobile_number') &&
+          jsonBody.containsKey('city')) {
+        myList.add({
           "name": '${jsonBody['name']}',
           "age": '${jsonBody['age']}',
           "mobile_number": '${jsonBody['mobile_number']}',
           "city": '${jsonBody['city']}'
         });
+      }
 
       return Response.ok('added successfully $jsonBody');
     })
